@@ -7,6 +7,14 @@ type ResourceConfig struct {
 	CPUSet      string
 }
 
+func NewResourceConfig(mL string, cShare string, cSet string) *ResourceConfig {
+	return &ResourceConfig{
+		MemoryLimit: mL,
+		CPUShare:    cShare,
+		CPUSet:      cSet,
+	}
+}
+
 // Subsystem 每个 Subsystem 可以实现以下四个接口
 type Subsystem interface {
 	// Name 返回 subsystem 的名字

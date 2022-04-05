@@ -2,6 +2,7 @@ package action
 
 import (
 	"container/cgroups"
+	"container/cgroups/subsystem"
 	"container/utils"
 	"flag"
 	"github.com/docker/docker/pkg/reexec"
@@ -11,7 +12,7 @@ import (
 	"log"
 )
 
-func Run(tty bool, command string) {
+func Run(tty bool, command string, resCfg *subsystem.ResourceConfig) {
 	var imageFilePath string
 	flag.StringVar(&imageFilePath, "imageFilePath", "/home/lomogo/playground/unionfs_ubuntu/ubuntu.tar", "镜像文件地址")
 
@@ -74,7 +75,7 @@ func Run(tty bool, command string) {
 		log.Fatalf("error starting the reexec.Command: %s", err)
 	}
 
-	cm := cgroups.NewCgroupManager(cmd.Process.Pid, "container-test", "", "512", "")
+	cm := cgroups.NewCgroupManager(cmd.Process.Pid, "container-test", resCfg)
 	defer cm.Remove()
 	err = cm.SetCgroup()
 	if err != nil {

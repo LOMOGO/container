@@ -4,7 +4,7 @@ import (
 	"container/cgroups/subsystem"
 )
 
-type cgroupManager struct {
+type CgroupManager struct {
 	Pid        int
 	CgroupPath string // Cgroup 的目录名
 	resCfg     *subsystem.ResourceConfig
@@ -16,20 +16,16 @@ var subSysIns = []subsystem.Subsystem{
 	&subsystem.CPUSetSubsystem{},
 }
 
-func NewCgroupManager(pid int, cgroupPath string, memoryLimit string, cpuShare string, cpuSet string) *cgroupManager {
-	return &cgroupManager{
+func NewCgroupManager(pid int, cgroupPath string, resCfg *subsystem.ResourceConfig) *CgroupManager {
+	return &CgroupManager{
 		Pid:        pid,
 		CgroupPath: cgroupPath,
-		resCfg: &subsystem.ResourceConfig{
-			memoryLimit,
-			cpuShare,
-			cpuSet,
-		},
+		resCfg:     resCfg,
 	}
 }
 
 // SetCgroup 设置各种 cgroup
-func (cm *cgroupManager) SetCgroup() error {
+func (cm *CgroupManager) SetCgroup() error {
 	for _, s := range subSysIns {
 
 		err := s.Set(cm.CgroupPath, cm.resCfg, cm.Pid)
@@ -41,7 +37,7 @@ func (cm *cgroupManager) SetCgroup() error {
 }
 
 // Remove 删除各种 cgroup
-func (cm *cgroupManager) Remove() error {
+func (cm *CgroupManager) Remove() error {
 	for _, s := range subSysIns {
 		err := s.Remove(cm.CgroupPath, cm.resCfg)
 		if err != nil {
