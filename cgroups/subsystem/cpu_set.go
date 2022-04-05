@@ -30,6 +30,10 @@ func (css *CPUSetSubsystem) Set(cgroupPath string, res *ResourceConfig, pid int)
 		return fmt.Errorf("set cpuset cgroup path: %v, fail: %v", subSysCgroupPath, err)
 	}
 
+	if err = ioutil.WriteFile(path.Join(subSysCgroupPath, "cpuset.mems"), []byte("0"), 0644); err != nil {
+		return fmt.Errorf("apply cpuset cgroup path: %v, fail: %v", subSysCgroupPath, err)
+	}
+
 	if err = ioutil.WriteFile(path.Join(subSysCgroupPath, "tasks"), []byte(strconv.Itoa(pid)), 0644); err != nil {
 		return fmt.Errorf("apply cpuset cgroup path: %v, fail: %v", subSysCgroupPath, err)
 	}
