@@ -16,7 +16,7 @@ func PathExist(Path string) (bool, error) {
 		return false, fmt.Errorf("path exist error: can't judge path: %s, reason: %s", Path, err)
 	}
 	if _, err = os.Stat(Path); os.IsNotExist(err) {
-		return false, nil
+		return false, err
 	}
 	return true, nil
 }
